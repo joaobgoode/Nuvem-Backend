@@ -123,8 +123,25 @@ func EditProductHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 }
 
+func SearchProductsHandler(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	var results []Product
+	err := supabase.DB.From("products").Select("*").Eq("id", id).Execute(&results)
+	if err != nil {
+		w.WriteHeader(400)
+		fmt.Println(err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(results); err != nil {
+		http.Error(w, "Failed to encode JSON", http.StatusInternalServerError)
+		log.Printf("Error encoding JSON: %v", err)
+	}
+}
+
 func main() {
 	http.HandleFunc("GET /products/", AllProductsHandler)
+	http.HandleFunc("GET /search/{id}", SearchProductsHandler)
 	http.HandleFunc("POST /new/{name}/{description}/{price}", NewProductHandler)
 	http.HandleFunc("DELETE /delete/{id}", DeleteProductHandler)
 	http.HandleFunc("PUT /edit/{id}/{name}/{description}/{price}", EditProductHandler)
