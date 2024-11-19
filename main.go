@@ -124,10 +124,10 @@ func EditProductHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	http.HandleFunc("/products/", AllProductsHandler)
-	http.HandleFunc("/new/{name}/{description}/{price}", NewProductHandler)
-	http.HandleFunc("/delete/{id}", DeleteProductHandler)
-	http.HandleFunc("/edit/{id}/{name}/{description}/{price}", EditProductHandler)
+	http.HandleFunc("GET /products/", AllProductsHandler)
+	http.HandleFunc("POST /new/{name}/{description}/{price}", NewProductHandler)
+	http.HandleFunc("DELETE /delete/{id}", DeleteProductHandler)
+	http.HandleFunc("PUT /edit/{id}/{name}/{description}/{price}", EditProductHandler)
 
 	http.ListenAndServe(port, nil)
 }
